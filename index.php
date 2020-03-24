@@ -54,10 +54,10 @@ Class Mirror
                         'Referer' => $_SERVER['HTTP_REFERER'] ?? '',
                         'Client_IP' => $_SERVER['HTTP_CLIENT_IP'] ?? '',
                         'X-Forwarded-For' => $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '',
-                        'Accept-Encoding' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
+                      //  'Accept-Encoding' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
                         'Accept-Charset' => $_SERVER['HTTP_ACCEPT_CHARSET'] ?? '',
                     ];
-                    $response = $this->get($url, $headers,$_SERVER['HTTP_ACCEPT_ENCODING'] ?? '');
+                    $response = $this->get($url, $headers);
                    // print_r($response);
 
                     $content = $response['body'];
@@ -95,7 +95,7 @@ Class Mirror
             'Accept' => $_SERVER['HTTP_ACCEPT'] ?? '',
             'Accept-Language' => $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '',
             'Referer' => $_SERVER['HTTP_REFERER'] ?? '',
-            'Accept-Encoding' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
+           // 'Accept-Encoding' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
             'Accept-Charset' => $_SERVER['HTTP_ACCEPT_CHARSET'] ?? '',
         ];
 
@@ -127,13 +127,13 @@ Class Mirror
 
     }
 
-    public function get($url, $header = [], $encoding)
+    public function get($url, $header = [])
     {
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //返回数据不直接输出
-        curl_setopt($ch, CURLOPT_ENCODING, $encoding); //指定gzip压缩
+      //  curl_setopt($ch, CURLOPT_ENCODING, $encoding); //指定gzip压缩
         //add header
         if (!empty($header)) {
             $headers = [];
