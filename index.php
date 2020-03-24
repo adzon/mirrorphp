@@ -5,6 +5,7 @@
  * Date: 2020/3/19
  * Time: 1:35 AM
  */
+error_reporting(0);
 
 //注意，请将 "https://mirrorclient.test" 替换为你的镜像系统域名。
 //伪静态规则可以直接使用 Wordpress、Laravel 的伪静态规则。
@@ -105,7 +106,7 @@ Class Mirror
             $this->config = unserialize(gzuncompress($content));
             return;
         }
-        $content = file_get_contents('http://mirrorclient.test/config?host=' . $this->host);
+        $content = file_get_contents($this->server.'/config?host=' . $this->host);
         $array = json_decode($content, true);
         file_put_contents($configFile, gzcompress(serialize($array)));
         $this->config = $array;
