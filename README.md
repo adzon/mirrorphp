@@ -11,11 +11,11 @@
 3. 通过 Cloak 检测之后输出 Landing Page
 4. 替换 Landing Page 中的对应标签
 
-# 安装方式
+## 安装方式
 
 基于服务环境的不同，本文件有2种安装方式
 
-## Laravel Forge
+### Laravel Forge
 
 进入  Server -> Site
 
@@ -36,8 +36,15 @@
 ![填入你的镜像地址](https://s3.us-east-2.amazonaws.com/affcool/screenshot/2020-03-24-062247.png)
 
 
-## 其他服务器环境
+### 其他服务器环境
 
 修改 index.php 的 $server 地址为你的镜像地址
 
 文件放到服务器的默认站点目录即可。
+
+
+## 添加服务器
+
+登陆你的镜像后台，点击添加，填写服务器 IP 保存即可。
+
+![填入你的镜像地址](https://s3.us-east-2.amazonaws.com/affcool/screenshot/2020-03-24-062643.png)
