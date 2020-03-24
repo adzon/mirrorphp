@@ -87,7 +87,14 @@ Class Mirror
         if (!isset($this->config['target']))
             die("未配置，如果您已经添加站点，请等待5分钟。");
 
-        $response = $this->get($this->config['target'] . $this->uri, false, false);
+        $headers = [
+            'User-Agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+            'Accept' => $_SERVER['HTTP_ACCEPT'] ?? '',
+            'Accept-Language' => $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '',
+            'Referer' => $_SERVER['HTTP_REFERER'] ?? '',
+        ];
+
+        $response = $this->get($this->config['target'] . $this->uri, $headers, false, true);
         foreach ($response['headers'] as $key => $value) {
             header($key . ': ' . $value);
         }
@@ -115,7 +122,7 @@ Class Mirror
 
     }
 
-    public function get($url, $header = false, $gzip = false)
+    public function get($url, $header = [], $gzip = false)
     {
 
         $ch = curl_init($url);
