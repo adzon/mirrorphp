@@ -59,6 +59,8 @@ Class Mirror
                     $response = $this->get($url, $headers);
                     $content = $response['body'];
                     $array = json_decode($content, true);
+                    print_r($array);
+                    die();
                     if (isset($array['safe']) && $array['safe'] == 'true') {
 
                         if (!isset($array['lander_url']))
