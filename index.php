@@ -57,11 +57,11 @@ Class Mirror
                         'Accept-Encoding' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
                         'Accept-Charset' => $_SERVER['HTTP_ACCEPT_CHARSET'] ?? '',
                     ];
-                    $response = $this->get($url, $headers);
-                    print_r($response);
+                    $response = $this->get($url, $headers,$_SERVER['HTTP_ACCEPT_ENCODING'] ?? '');
+                   // print_r($response);
 
                     $content = $response['body'];
-                    $array = json_decode($content, true,true);
+                    $array = json_decode($content, true);
                     if (isset($array['safe']) && $array['safe'] == 'true') {
 
                         if (!isset($array['lander_url']))
@@ -95,9 +95,11 @@ Class Mirror
             'Accept' => $_SERVER['HTTP_ACCEPT'] ?? '',
             'Accept-Language' => $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '',
             'Referer' => $_SERVER['HTTP_REFERER'] ?? '',
+            'Accept-Encoding' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
+            'Accept-Charset' => $_SERVER['HTTP_ACCEPT_CHARSET'] ?? '',
         ];
 
-        $response = $this->get($this->config['target'] . $this->uri, $headers, false, true);
+        $response = $this->get($this->config['target'] . $this->uri, $headers, $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '');
         foreach ($response['headers'] as $key => $value) {
             header($key . ': ' . $value);
         }
@@ -125,14 +127,13 @@ Class Mirror
 
     }
 
-    public function get($url, $header = [], $gzip = false)
+    public function get($url, $header = [], $encoding)
     {
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //返回数据不直接输出
-        if ($gzip)
-            curl_setopt($ch, CURLOPT_ENCODING, "gzip"); //指定gzip压缩
+        curl_setopt($ch, CURLOPT_ENCODING, $encoding); //指定gzip压缩
         //add header
         if (!empty($header)) {
             $headers = [];
