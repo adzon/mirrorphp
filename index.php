@@ -61,9 +61,7 @@ Class Mirror
                     print_r($response);
 
                     $content = $response['body'];
-                    $array = json_decode($content, true);
-                    print_r($array);
-                    die();
+                    $array = json_decode($content, true,true);
                     if (isset($array['safe']) && $array['safe'] == 'true') {
 
                         if (!isset($array['lander_url']))
@@ -80,7 +78,7 @@ Class Mirror
                     }
 
                 } catch (\Exception $e) {
-                     die($e->getMessage());
+
                 }
 
             }
