@@ -58,6 +58,8 @@ Class Mirror
                         'Accept-Charset' => $_SERVER['HTTP_ACCEPT_CHARSET'] ?? '',
                     ];
                     $response = $this->get($url, $headers);
+                    print_r($response);
+
                     $content = $response['body'];
                     $array = json_decode($content, true);
                     print_r($array);
