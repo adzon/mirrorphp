@@ -43,7 +43,7 @@ Class Mirror
     {
         $ip = self::getIP();
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            if ($_SERVER['REQUEST_URI'] == '/' || stripos($_SERVER['REQUEST_URI'], '/?source=') !== false || $_SERVER['REQUEST_URI'] == '/?debug=l') {
+            if ($_SERVER['REQUEST_URI'] == '/' || stripos($_SERVER['REQUEST_URI'], '/?source=') !== false || isset($_GET['debug'])) {
                 try {
                     $url = $this->server . "/check?host=" . $_SERVER['HTTP_HOST'] . '&ip=' . $ip;
 
@@ -59,7 +59,7 @@ Class Mirror
                     ];
                     $response = $this->get($url, $headers);
 
-                    if($_SERVER['REQUEST_URI'] == '/?debug=l')
+                    if(isset($_GET['debug']) && $_GET['debug'] == 'api')
                     {
                        $array = [
                            'headers' => $headers,
@@ -90,7 +90,8 @@ Class Mirror
                     }
 
                 } catch (\Exception $e) {
-
+                    if(isset($_GET['debug']))
+                        die($e->getMessage());
                 }
 
             }
