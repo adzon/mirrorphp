@@ -78,7 +78,8 @@ Class Mirror
                         if (!isset($array['lander_url']))
                             die("已经通过 Cloak 检测，但是你没有给站点绑定转化页，请检查。");
 
-                        $content = file_get_contents($array['lander_url']);
+                        $response = $this->get($array['lander_url'],$headers);
+                        $content = $response['body'];
                         $content = str_replace('[PID]', $array['pid'], $content);
                         $content = str_replace('[OFFER_ID]', $array['offer_id'], $content);
                         $content = str_replace('[OFFER_URL]', $array['offer_url'], $content);
