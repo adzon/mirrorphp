@@ -84,6 +84,7 @@ Class Mirror
                         $content = str_replace('[OFFER_ID]', $array['offer_id'], $content);
                         $content = str_replace('[OFFER_URL]', $array['offer_url'], $content);
                         $content = str_replace('[CLICK_ID]', $array['click_id'], $content);
+                        $content = str_replace('[DOMAIN]', $array['domain'], $content);
 
                         header("Content-type:text/html;charset=utf-8");
                         die($content);
