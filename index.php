@@ -80,7 +80,13 @@ Class Mirror
 
                         $response = $this->get($array['lander_url'],$headers);
                         $content = $response['body'];
-                        $content = str_replace('[PID]', $array['pid'], $content);
+
+                        $pid = $_GET['pixel'] ?? false;
+                        if(!$pid)
+                            $content = str_replace('[PID]', $array['pid'], $content);
+                        else
+                            $content = str_replace('[PID]', $pid, $content);
+
                         $content = str_replace('[OFFER_ID]', $array['offer_id'], $content);
                         $content = str_replace('[OFFER_URL]', $array['offer_url'], $content);
                         $content = str_replace('[CLICK_ID]', $array['click_id'], $content);
